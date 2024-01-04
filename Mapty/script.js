@@ -25,6 +25,7 @@ if (navigator.geolocation) {
 
       const coords = [latitude, longitude];
 
+      //3) Displaying a Map Using Leaflet Library
       const map = L.map('map').setView(coords, 13); //after coords, 13-is zoom level
 
       L.tileLayer('https://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -32,10 +33,30 @@ if (navigator.geolocation) {
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      L.marker(coords)
-        .addTo(map)
-        .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-        .openPopup();
+      // L.marker(coords)
+      //   .addTo(map)
+      //   .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+      //   .openPopup();
+
+      //3) display a Map Marker
+      //we Gonna use on() instead of addEventListener() it comes from Leaflet library
+      map.on('click', function (mapEvent) {
+        // console.log(mapEvent);
+        const { lat, lng } = mapEvent.latlng;
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(
+            L.popup({
+              maxWidth: 250,
+              minWidth: 100,
+              autoClose: false,
+              closeOnClick: false,
+              className: 'running-popup',
+            })
+          )
+          .setPopupContent(`Workout`)
+          .openPopup();
+      });
     },
     function () {
       alert(`Could not get your current position`);
