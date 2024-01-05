@@ -83,7 +83,13 @@ class App {
   #workouts = [];
 
   constructor() {
+    //Get users position
     this._getPoistion();
+
+    //Get data from Local Storage
+    this._getLocalStorage();
+
+    //Attach event handlers
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
@@ -119,6 +125,7 @@ class App {
 
     //Handling clicks on map
     this.#map.on('click', this._showForm.bind(this));
+    this.#workouts.forEach(work => this._renderWorkoutMarker(work));
   }
 
   _showForm(mapE) {
@@ -195,6 +202,9 @@ class App {
     //Hide form + clear input fields
     //Claer input fiels
     this._hideForm();
+
+    //Set local storage to all workouts
+    this._setLocalStorage();
   }
 
   _renderWorkoutMarker(workout) {
@@ -278,6 +288,26 @@ class App {
         duration: 1,
       },
     });
+  }
+  _setLocalStorage() {
+    localStorage.setItem('workout', JSON.stringify(this.#workouts));
+    //JSON.stringify()we can use this method here to convert any object in JavaScript to a string
+  }
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workout'));
+    console.log(data);
+
+    if (!data) return;
+
+    this.#workouts = data;
+
+    this.#workouts.forEach(work => this._renderWorkout(work));
+  }
+
+  //We can manually reset all local storage by typing in console app.reset()
+  reset() {
+    localStorage.removeItem('workout');
+    location.reload();
   }
 }
 
