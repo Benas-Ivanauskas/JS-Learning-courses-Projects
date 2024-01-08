@@ -139,12 +139,46 @@ btn.addEventListener('click', function () {
 ///////////////////////////////////////
 //The Event loop in practise
 
-console.log('Test Start');
-setTimeout(() => console.log('0 sec timer'), 0);
-Promise.resolve('Resolved promise 1').then(response => console.log(response));
+// console.log('Test Start');
+// setTimeout(() => console.log('0 sec timer'), 0);
+// Promise.resolve('Resolved promise 1').then(response => console.log(response));
 
-Promise.resolve('Resolved promise 2').then(response => {
-  for (let i = 0; i < 100000000; i++) {}
-  console.log(response);
+// Promise.resolve('Resolved promise 2').then(response => {
+//   for (let i = 0; i < 100000000; i++) {}
+//   console.log(response);
+// });
+// console.log('Test end');
+
+///////////////////////////////////////
+//Building a Simple Promise
+
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('Lottery draw is happening');
+  setTimeout(() => {
+    if (Math.random() >= 0.5) {
+      resolve('You win');
+    } else {
+      reject(new Error('You lost your money'));
+    }
+  }, 2000);
 });
-console.log('Test end');
+lotteryPromise
+  .then(resolved => console.log(resolved))
+  .catch(error => console.log(error));
+
+//Promisifying setTimeout
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+wait(2)
+  .then(() => {
+    console.log('I waited for 2 seconds');
+    return wait(1);
+  })
+  .then(() => console.log('i waited for 1 second'));
+
+Promise.resolve('abc').then(x => console.log(x));
+Promise.reject(new Error('Problem')).catch(x => console.log(x));
