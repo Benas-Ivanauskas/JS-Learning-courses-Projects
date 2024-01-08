@@ -49,10 +49,10 @@ const renderCountry = function (data, className = '') {
   countriesContainer.style.opacity = 1;
 };
 
-const renderError = function (message) {
-  countriesContainer.insertAdjacentText('beforeend', message);
-  // countriesContainer.style.opacity = 1;
-};
+// const renderError = function (message) {
+//   countriesContainer.insertAdjacentText('beforeend', message);
+// countriesContainer.style.opacity = 1;
+// };
 
 // //AJAX call country 1
 // const getCountryNeighbour = function (country) {
@@ -186,40 +186,58 @@ btn.addEventListener('click', function () {
 ///////////////////////////////////////
 //Promisifying the Geolocation API
 
-const getPosition = function () {
-  return new Promise(function (resolve, reject) {
-    // navigator.geolocation.getCurrentPosition(
-    //   position => resolve(position),
-    //   err => reject(err)
-    // );
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
+// const getPosition = function () {
+//   return new Promise(function (resolve, reject) {
+//     // navigator.geolocation.getCurrentPosition(
+//     //   position => resolve(position),
+//     //   err => reject(err)
+//     // );
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
+
+// getPosition().then(position => console.log(position));
+
+// const whereAmI = function () {
+//   getPosition()
+//     .then(position => {
+//       const { latitude: lat, longitude: lng } = position.coords;
+//       return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+//     })
+//     .then(resolve => {
+//       if (!resolve.ok)
+//         throw new Error(`Problem with geocoding $(response.status}`);
+//       return response.json();
+//     })
+//     .then(data => {
+//       console.log(data);
+//       console.log(`You are in ${data.city}, ${data.country}`);
+//       return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+//     })
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Country not fount (${res.status})`);
+//       return res.json();
+//     })
+//     .then(data => renderCountry(data[0]))
+//     .catch(err => console.log(`${err.message} error`));
+// };
+
+// btn.addEventListener('click', whereAmI);
+
+///////////////////////////////////////
+//Promises with ASYNS/AWAIT
+
+const whereIAm = async function (country) {
+  try {
+    const responsed = await fetch(
+      `https://restcountries.com/v3.1/name/${country}`
+    );
+
+    const data = await responsed.json();
+    console.log(data);
+    renderCountry(data[0]);
+  } catch (err) {
+    console.log(`${err.message}error`);
+  }
 };
-
-getPosition().then(position => console.log(position));
-
-const whereAmI = function () {
-  getPosition()
-    .then(position => {
-      const { latitude: lat, longitude: lng } = position.coords;
-      return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-    })
-    .then(resolve => {
-      if (!resolve.ok)
-        throw new Error(`Problem with geocoding $(response.status}`);
-      return response.json();
-    })
-    .then(data => {
-      console.log(data);
-      console.log(`You are in ${data.city}, ${data.country}`);
-      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Country not fount (${res.status})`);
-      return res.json();
-    })
-    .then(data => renderCountry(data[0]))
-    .catch(err => console.log(`${err.message} error`));
-};
-
-btn.addEventListener('click', whereAmI);
+whereIAm('lithuania');
