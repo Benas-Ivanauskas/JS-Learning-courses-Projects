@@ -4,6 +4,7 @@ const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
+//Old school way
 // const getCountryData = function (country) {
 //   const request = new XMLHttpRequest();
 //   request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
@@ -35,7 +36,7 @@ const countriesContainer = document.querySelector('.countries');
 const renderCountry = function (data, className = '') {
   const httml = `
   <article class="${className}">
-  <img class="country__img" src="${data.flags.png}" />
+  <img class="country__img" src="${data.flags}" />
   <div class="country__data">
   <h3 class="country__name">${data.name.common}</h3>
   <h4 class="country__region">${data.region}</h4>
@@ -48,47 +49,74 @@ const renderCountry = function (data, className = '') {
   countriesContainer.style.opacity = 1;
 };
 
-//AJAX call country 1
-const getCountryNeighbour = function (country) {
-  const request = new XMLHttpRequest();
-  request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
-  request.send();
-  request.addEventListener('load', function () {
-    console.log(this.responseText);
-    const [data] = JSON.parse(this.responseText);
-    console.log(data);
-    //Render country 1
-    renderCountry(data);
+// //AJAX call country 1
+// const getCountryNeighbour = function (country) {
+//   const request = new XMLHttpRequest();
+//   request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
+//   request.send();
+//   request.addEventListener('load', function () {
+//     console.log(this.responseText);
+//     const [data] = JSON.parse(this.responseText);
+//     console.log(data);
+//     //Render country 1
+//     renderCountry(data);
 
-    //Get neighbour country 2
-    const neighbour = data.borders?.[0];
+//     //Get neighbour country 2
+//     const neighbour = data.borders?.[0];
 
-    if (!neighbour) return;
-    //AJAX call country 2
-    const request2 = new XMLHttpRequest();
-    request2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbour}`);
-    request2.send();
-    request2.addEventListener('load', function () {
-      const [data2] = JSON.parse(this.responseText);
-      console.log(data2);
-      //Render country 2
-      renderCountry(data2, 'neighbour');
-    });
-  });
+//     if (!neighbour) return;
+//     //AJAX call country 2
+//     const request2 = new XMLHttpRequest();
+//     request2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbour}`);
+//     request2.send();
+//     request2.addEventListener('load', function () {
+//       const [data2] = JSON.parse(this.responseText);
+//       console.log(data2);
+//       //Render country 2
+//       renderCountry(data2, 'neighbour');
+//     });
+//   });
+// };
+
+// // getCountryNeighbour('lithuania');
+// getCountryNeighbour('lithuania');
+
+// setTimeout(() => {
+//   console.log('1 second passed');
+//   setTimeout(() => {
+//     console.log('2 second passed');
+//     setTimeout(() => {
+//       console.log('3 second passed');
+//       setTimeout(() => {
+//         console.log('4 second passed');
+//       }, 1000);
+//     }, 1000);
+//   }, 1000);
+// }, 1000);
+
+// /   const request = new XMLHttpRequest();
+//   request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
+//   request.send();
+
+///////////////////////////////////////
+//Promises and the fetch API
+// const request = fetch('https://restcountries.com/v3.1/name/lithuania');
+// console.log(request);
+
+//Consume promise
+const getCountryData = function (country) {
+  //country 1
+  fetch(`https://restcountries.com/v3.1/name/${country}`)
+    .then(response => response.json())
+    .then(data => {
+      renderCountry(data[0]);
+      const neighbour = data[0].borders[0];
+      if (!neighbour) return;
+      //country 2
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => renderCountry(data, 'neighbour'));
 };
 
-// getCountryNeighbour('lithuania');
-getCountryNeighbour('lithuania');
-
-setTimeout(() => {
-  console.log('1 second passed');
-  setTimeout(() => {
-    console.log('2 second passed');
-    setTimeout(() => {
-      console.log('3 second passed');
-      setTimeout(() => {
-        console.log('4 second passed');
-      }, 1000);
-    }, 1000);
-  }, 1000);
-}, 1000);
+getCountryData('germany');
