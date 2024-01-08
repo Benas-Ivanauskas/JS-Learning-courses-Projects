@@ -36,17 +36,22 @@ const countriesContainer = document.querySelector('.countries');
 const renderCountry = function (data, className = '') {
   const httml = `
   <article class="${className}">
-  <img class="country__img" src="${data.flags}" />
+  <img class="country__img" src="${data.flags?.png}" />
   <div class="country__data">
-  <h3 class="country__name">${data.name.common}</h3>
+  <h3 class="country__name">${data.name?.common}</h3>
   <h4 class="country__region">${data.region}</h4>
   <p class="country__row"><span>👫</span>${data.population}</p>
-  <p class="country__row"><span>🗣️</span>${data.languages.lit}</p>
-  <p class="country__row"><span>💰</span>${data.currencies.EUR?.name}</p>
+  <p class="country__row"><span>🗣️</span>${data.languages?.lit}</p>
+  <p class="country__row"><span>💰</span>${data.currencies?.EUR.name}</p>
   </div>
   </article>`;
   countriesContainer.insertAdjacentHTML('beforeend', httml);
   countriesContainer.style.opacity = 1;
+};
+
+const renderError = function (message) {
+  countriesContainer.insertAdjacentText('beforeend', message);
+  // countriesContainer.style.opacity = 1;
 };
 
 // //AJAX call country 1
@@ -78,7 +83,7 @@ const renderCountry = function (data, className = '') {
 //   });
 // };
 
-// // getCountryNeighbour('lithuania');
+// getCountryNeighbour('lithuania');
 // getCountryNeighbour('lithuania');
 
 // setTimeout(() => {
@@ -104,6 +109,7 @@ const renderCountry = function (data, className = '') {
 // console.log(request);
 
 //Consume promise
+
 const getCountryData = function (country) {
   //country 1
   fetch(`https://restcountries.com/v3.1/name/${country}`)
@@ -116,7 +122,16 @@ const getCountryData = function (country) {
       return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
     })
     .then(response => response.json())
-    .then(data => renderCountry(data, 'neighbour'));
+    .then(data => renderCountry(data, 'neighbour'))
+    .catch(err => {
+      console.log(`${err}`);
+      renderError(`Something went wrong${err.message}`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 };
 
-getCountryData('germany');
+btn.addEventListener('click', function () {
+  getCountryData('lithuania');
+});
