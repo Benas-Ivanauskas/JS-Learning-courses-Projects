@@ -9,16 +9,16 @@ const countriesContainer = document.querySelector('.countries');
 const renderCountry = function (data, className = '') {
   const html = `
   <article class="${className}">
-          <img class="country__img" src="${data.flags?.png}" />
+          <img class="country__img" src="${data.flags.png}" />
           <div class="country__data">
-            <h3 class="country__name">${data.name?.common}</h3>
+            <h3 class="country__name">${data.name.common}</h3>
             <h4 class="country__region">${data.region}</h4>
             <p class="country__row"><span>👫</span>${data.population}</p>
           </div>
         </article>
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  // countriesContainer.style.opacity = 1;
 };
 
 // const getCountryAndNeighbour = function (country) {
@@ -99,6 +99,12 @@ const renderCountry = function (data, className = '') {
 //Chaining promises
 
 //Cleaner code------------
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
 const getCountryData = function (country) {
   // Country 1
   fetch(`https://restcountries.com/v3.1/name/${country}`)
@@ -115,8 +121,19 @@ const getCountryData = function (country) {
     .then(response => response.json())
     .then(data => {
       renderCountry(data, 'neighbour');
+    })
+    .catch(err => {
+      console.error(`${err} 💣💣`);
+      renderError(`Something went wrong 💣💣. ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
     });
 };
 
-getCountryData('germany');
 //Not working neighbour country... Error with flag, country ....
+
+btn.addEventListener('click', function (e) {
+  e.preventDefault();
+  getCountryData('lithuania');
+});
