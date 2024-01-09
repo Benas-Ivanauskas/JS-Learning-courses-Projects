@@ -9,9 +9,9 @@ const countriesContainer = document.querySelector('.countries');
 const renderCountry = function (data, className = '') {
   const html = `
   <article class="${className}">
-          <img class="country__img" src="${data.flags.png}" />
+          <img class="country__img" src="${data.flags?.png}" />
           <div class="country__data">
-            <h3 class="country__name">${data.name.common}</h3>
+            <h3 class="country__name">${data.name?.common}</h3>
             <h4 class="country__region">${data.region}</h4>
             <p class="country__row"><span>👫</span>${data.population}</p>
           </div>
@@ -72,8 +72,8 @@ const renderCountry = function (data, className = '') {
 //Promises and the fetch API-------------------------------------------
 
 //Fetch function immediately return a promise here. And nor promise is stored to request variable
-const request = fetch(`https://restcountries.com/v3.1/name/lithuania`);
-console.log(request);
+// const request = fetch(`https://restcountries.com/v3.1/name/lithuania`);
+// console.log(request);
 
 // //Consuming promise
 // const getCountryData = function (country) {
@@ -100,12 +100,23 @@ console.log(request);
 
 //Cleaner code------------
 const getCountryData = function (country) {
+  // Country 1
   fetch(`https://restcountries.com/v3.1/name/${country}`)
-    .then(response => {
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       renderCountry(data[0]);
+
+      const neighbour = data[0].borders?.[0];
+      if (!neighbour) return;
+
+      // Country 2
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => {
+      renderCountry(data, 'neighbour');
     });
 };
-getCountryData('portugal');
+
+getCountryData('germany');
+//Not working neighbour country... Error with flag, country ....
