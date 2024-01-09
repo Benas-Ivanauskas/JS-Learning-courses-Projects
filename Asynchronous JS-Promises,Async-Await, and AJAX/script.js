@@ -324,15 +324,44 @@ GOOD LUCK 😀
 
 //Consuming Promises with Async/Await-------------------------------------------
 
-const whereAmI = async function (country) {
+// const whereAmI = async function (country) {
+//   try {
+//     const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+//     const [data] = await res.json();
+//     console.log(data);
+//   } catch (err) {
+//     console.error(`${err} Something went wrong ${err.message}`);
+//   }
+// };
+
+// whereAmI('lithuania');
+// console.log('First');
+
+//Running Promises in Parallel-------------------------------------------
+
+const get3Countries = async function (country1, country2, country3) {
   try {
-    const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
-    const [data] = await res.json();
-    console.log(data);
+    // const [data1] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${country1}`
+    // );
+    // const [data2] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${country2}`
+    // );
+    // const [data3] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${country3}`
+    // );
+
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${country1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${country2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${country3}`),
+    ]);
+    // console.log([data1.capital, data2.capital, data3.capital]);
+
+    console.log(data.map(data => data[0].capital));
   } catch (err) {
-    console.error(`${err} Something went wrong ${err.message}`);
+    console.error(err);
   }
 };
 
-whereAmI('lithuania');
-console.log('First');
+get3Countries('lithuania', 'germany', 'portugal');
