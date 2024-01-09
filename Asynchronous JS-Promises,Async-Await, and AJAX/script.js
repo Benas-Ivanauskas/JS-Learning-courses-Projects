@@ -191,3 +191,16 @@ const whereAmI = function (lat, lng) {
 };
 
 whereAmI(52.508, 13.381);
+
+//Ehe Event loop-------------------------------------------
+
+console.log('Test Start');
+setTimeout(() => console.log('0 sec timer'), 0);
+//Promise.resolve allow us to create a promise, which immediatelly resolved
+Promise.resolve('Resolved promise 1').then(response => console.log(response));
+console.log('Test end');
+
+Promise.resolve('Resolved promise 2').then(res => {
+  for (let i = 0; i < 1000000000; i++) {}
+  console.log(res);
+});
