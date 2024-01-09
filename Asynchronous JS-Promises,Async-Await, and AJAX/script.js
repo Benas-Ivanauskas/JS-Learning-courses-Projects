@@ -174,23 +174,23 @@ TEST COORDINATES 2: -33.933, 18.474
 GOOD LUCK 😀
 */
 
-const whereAmI = function (lat, lng) {
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=JSON`)
-    .then(response => {
-      if (response.ok)
-        throw new Error(`Problem with geocoding ${response.status}`);
-      response.json();
-    })
-    .then(data => {
-      console.log(data);
-      console.log(`You are in ${data.country}`);
-    })
-    .catch(err => {
-      console.error(`${err} 💣💣`);
-    });
-};
+// const whereAmI = function (lat, lng) {
+//   fetch(`https://geocode.xyz/${lat},${lng}?geoit=JSON`)
+//     .then(response => {
+//       if (response.ok)
+//         throw new Error(`Problem with geocoding ${response.status}`);
+//       response.json();
+//     })
+//     .then(data => {
+//       console.log(data);
+//       console.log(`You are in ${data.country}`);
+//     })
+//     .catch(err => {
+//       console.error(`${err} 💣💣`);
+//     });
+// };
 
-whereAmI(52.508, 13.381);
+// whereAmI(52.508, 13.381);
 
 //Ehe Event loop-------------------------------------------
 
@@ -225,11 +225,11 @@ whereAmI(52.508, 13.381);
 
 // //Promisifying setTimeout
 
-const wait = function (seconds) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
-  });
-};
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
 
 // wait(3)
 //   .then(() => {
@@ -282,42 +282,53 @@ TEST DATA: Images in the img folder. Test the error handler by passing a wrong i
 GOOD LUCK 😀
 */
 
-const imgContainer = document.querySelector('.images');
+// const imgContainer = document.querySelector('.images');
 
-const createImage = function (imgPath) {
-  return new Promise(function (resolve, reject) {
-    const img = document.createElement('img');
-    img.src = imgPath;
+// const createImage = function (imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = imgPath;
 
-    img.addEventListener('load', function () {
-      imgContainer.append(img);
-      resolve(img);
-    });
+//     img.addEventListener('load', function () {
+//       imgContainer.append(img);
+//       resolve(img);
+//     });
 
-    img.addEventListener('error', function () {
-      reject(new Error('Image not found'));
-    });
-  });
+//     img.addEventListener('error', function () {
+//       reject(new Error('Image not found'));
+//     });
+//   });
+// };
+
+// let currentImg;
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log(`img 1 loaded`);
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log(`img 2 loaded`);
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.error(err));
+
+//Consuming Promises with Async/Await-------------------------------------------
+
+const whereAmI = async function (country) {
+  const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+  const [data] = await res.json();
+  console.log(data);
 };
 
-let currentImg;
-
-createImage('img/img-1.jpg')
-  .then(img => {
-    currentImg = img;
-    console.log(`img 1 loaded`);
-    return wait(2);
-  })
-  .then(() => {
-    currentImg.style.display = 'none';
-    return createImage('img/img-2.jpg');
-  })
-  .then(img => {
-    currentImg = img;
-    console.log(`img 2 loaded`);
-    return wait(2);
-  })
-  .then(() => {
-    currentImg.style.display = 'none';
-  })
-  .catch(err => console.error(err));
+whereAmI('portugal');
+console.log('First');
