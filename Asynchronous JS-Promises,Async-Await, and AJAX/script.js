@@ -325,10 +325,14 @@ GOOD LUCK 😀
 //Consuming Promises with Async/Await-------------------------------------------
 
 const whereAmI = async function (country) {
-  const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
-  const [data] = await res.json();
-  console.log(data);
+  try {
+    const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+    const [data] = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.error(`${err} Something went wrong ${err.message}`);
+  }
 };
 
-whereAmI('portugal');
+whereAmI('lithuania');
 console.log('First');
