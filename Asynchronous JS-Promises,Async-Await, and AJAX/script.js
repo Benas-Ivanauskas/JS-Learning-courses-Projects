@@ -194,13 +194,46 @@ whereAmI(52.508, 13.381);
 
 //Ehe Event loop-------------------------------------------
 
-console.log('Test Start');
-setTimeout(() => console.log('0 sec timer'), 0);
-//Promise.resolve allow us to create a promise, which immediatelly resolved
-Promise.resolve('Resolved promise 1').then(response => console.log(response));
-console.log('Test end');
+// console.log('Test Start');
+// setTimeout(() => console.log('0 sec timer'), 0);
+// //Promise.resolve allow us to create a promise, which immediatelly resolved
+// Promise.resolve('Resolved promise 1').then(response => console.log(response));
+// console.log('Test end');
 
-Promise.resolve('Resolved promise 2').then(res => {
-  for (let i = 0; i < 1000000000; i++) {}
-  console.log(res);
+// Promise.resolve('Resolved promise 2').then(res => {
+//   for (let i = 0; i < 1000000000; i++) {}
+//   console.log(res);
+// });
+
+//Building a Simple Promise-------------------------------------------
+
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('Lottery draw is happening');
+  setTimeout(() => {
+    if (Math.random() >= 0.5) {
+      //promise as fulfilled, we use the resolve function
+      resolve('You won ');
+    } else {
+      reject(new Error('You lost your money'));
+    }
+  }, 2000);
 });
+
+lotteryPromise
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+
+//Promisifying setTimeout
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+wait(3)
+  .then(() => {
+    console.log('I waited for 3 sec');
+    return wait(1);
+  })
+  .then(() => console.log('i waited for 1 sec'));
